@@ -1,8 +1,8 @@
 ---
 title: "R_Markdown_cviko"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 date: "2025-03-14"
 ---
 
@@ -205,5 +205,21 @@ plot(data$flipper_length_mm ~ data$body_mass_g,
 
 ```
 
+################################# ggplot2 ######################################
 
+# Adjust the following code, so that the bar plot is horizontal
+data %>%
+  group_by(island) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = island, y = n))+
+  geom_bar(stat = "identity") 
+  
+```{r}
+
+
+
+
+
+
+```
 
