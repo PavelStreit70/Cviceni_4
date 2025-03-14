@@ -132,9 +132,74 @@ plot(x =  data$bill_depth_mm,
      col = data$species,
      cex = 1,
      pch = as.integer(data$sex))
-legend("topright", legend = levels(data$species), col = 1:3, pch = 18)
+legend("topright", legend = levels(data$species), col = 1:3, pch = 9)
 
 
+```
+
+```{r}
+
+# Adjust the following code, so that the barplot is horizontal (years will be on y axis)
+
+data.barplot <- data %>%
+  group_by(year) %>% 
+  summarise(n = n()) 
+
+barplot(data.barplot$n,
+        xlab = 'Year',
+        ylab = 'Number of penguins',
+        names.arg= data.barplot$year,
+        horiz = TRUE)
+
+```
+
+
+
+```{r}
+
+# Create a barplot, where you plot the number of male and female penguins in the study
+
+data.barplot.b <- data %>%
+  group_by(sex) %>%
+  summarise(n = n()) 
+
+barplot(data.barplot.b$n,
+        xlab = 'Sex',
+        ylab = 'Amount of penguins',
+        names.arg= data.barplot.b$sex)
+
+```
+
+```{r}
+
+# Plot the histogram of flipper length of penguins living on Biscoe island in year 2008.
+
+data.hist <- data %>%
+  filter(year == "2008", island == "Biscoe")
+
+hist(data.hist$flipper_length_mm,
+     xlab = 'Flipper length (mm) of penguins of Biscoe in 2008',
+     ylab = 'Frequency')
+
+```
+
+```{r}
+
+#Create a box plot of bill length [y] based on sex [x], and reorder the x-axis labels in a way male is first
+
+data$sex_reordered <- factor(data$sex, levels = c('male', 'female'))
+boxplot(data$bill_length_mm ~ data$sex_reordered)
+
+# Create a scatterplot of flipper length based on body mass
+# color the points based on the island
+# set the shape of points based on the species
+# label the axes appropriately
+
+plot(data$flipper_length_mm ~ data$body_mass_g,
+     col = data$island, 
+     pch = as.integer(data$species),
+     xlab = "Body mass (g)",
+     ylab = "Flipper length (mm)")
 
 
 
