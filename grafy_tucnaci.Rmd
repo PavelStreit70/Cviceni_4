@@ -1,17 +1,19 @@
 ---
 title: "R_Markdown_cviko"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2025-03-14"
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 
 # Install the libraries we will need today
 
 install.packages('ggplot2')
 install.packages('plotly') 
 install.packages('palmerpenguins')
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
 # Import the libraries
 
@@ -23,7 +25,7 @@ library(tidyr)
 
 data <- penguins
 
-view(data)
+View(data)
 head(data)
 str(data)
 
@@ -109,4 +111,34 @@ data %>%
   filter(female > male)
   
 ```
+
+
+```{r}
+
+# Adjust the following code, so that it has proper labels of x-axis, y-axis and title
+
+boxplot(data$body_mass_g ~ data$species,
+        xlab = "Body mass (g)",
+        ylab = "Species",
+        main = "Body mass based on penguin species")
+
+# Adjust the following code, so that:
+  # Color of the points is based on species, and add the color legend
+  # Size of the points is 1
+  # Shape of the points is based on sex
+
+plot(x =  data$bill_depth_mm, 
+     y =  data$bill_length_mm,
+     col = data$species,
+     cex = 1,
+     pch = as.integer(data$sex))
+legend("topright", legend = levels(data$species), col = 1:3, pch = 18)
+
+
+
+
+
+```
+
+
 
