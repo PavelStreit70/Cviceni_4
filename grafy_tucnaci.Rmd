@@ -216,7 +216,8 @@ data %>%
   
 ```{r}
 
-
+# Adjust the previous code, so that the bar plots are arranged in an descending way
+# comment: my mistake, they already are; if they weren't, reorder() function can be used
 
 
 
