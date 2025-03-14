@@ -48,3 +48,65 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+
+#Get the structure of data, number of rows and number of columns
+
+str(data)
+nrow(data)
+ncol(data)
+
+# How many NA values are in total in the dataset?
+
+sum(is.na(NA))
+
+# Remove rows containing NA values. How many rows are left now?
+
+data <- na.omit(data)
+nrow(data)
+
+# What islands do these penguins live on?
+
+levels(data$island)
+table(data$island)
+
+#What is the mean body mass of male penguins?
+
+data %>% 
+  filter(sex == "male") %>% 
+  summarise(mean(body_mass_g)) 
+
+# Compute maximum flipper length for each of the penguin species
+
+data %>% 
+  group_by(species) %>% 
+  summarise(max = max(flipper_length_mm))
+
+# Compute how many penguins lived on each of the islands in each year
+
+data %>% 
+  group_by(island, year) %>% 
+  summarise(sum = sum())
+
+# (HW) Is the minimal bill length of Adelie species higher than Gentoo?
+
+#min(data$bill_length_mm[data$species == "Adelie"]) > min(data$bill_length_mm[data$species == "Gentoo"])
+
+data %>%
+  filter(species %in% c("Adelie", "Gentoo")) %>%
+  group_by(species) %>%
+  summarise(min_bill_length = min(bill_length_mm, na.rm = TRUE))
+  
+
+# (HW) On which island do more female than male penguins live?
+
+data %>% 
+  group_by(island, sex) %>% 
+  summarise(n = n()) %>% 
+  pivot_wider(names_from = "sex", values_from = "n") %>%
+  filter(female > male)
+  
+```
+
