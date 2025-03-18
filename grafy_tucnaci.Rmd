@@ -201,26 +201,147 @@ plot(data$flipper_length_mm ~ data$body_mass_g,
      xlab = "Body mass (g)",
      ylab = "Flipper length (mm)")
 
-
-
 ```
 
 ################################# ggplot2 ######################################
 
-# Adjust the following code, so that the bar plot is horizontal
+# Adjust the following code, so that the bar plot is vertikal
+
 data %>%
   group_by(island) %>%
   summarise(n = n()) %>%
   ggplot(aes(x = island, y = n))+
-  geom_bar(stat = "identity") 
+  geom_bar(stat = "identity")
   
-```{r}
-
+data %>%
+  group_by(island) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = island, y = n))+
+  geom_bar(stat = "identity")+
+  coord_flip()
+  
 # Adjust the previous code, so that the bar plots are arranged in an descending way
 # comment: my mistake, they already are; if they weren't, reorder() function can be used
+  
+# Adjust the following code, so that the boxplot fill is based on species
 
-#pica
+data %>%
+  ggplot(aes(x = sex, y = bill_length_mm, fill = species))+
+  geom_boxplot() 
+  
+# Adjust the previous code, so that faceting on island will be on x-axis
+
+data %>%
+  ggplot(aes(x = sex, y = bill_length_mm, fill = species))+
+  geom_boxplot() +
+  facet_grid(. ~ island)
+
+# Adjust the following code: add individual points using the geom_jitter() on the plot
+# Color the individual points based on species
+
+data %>%
+  ggplot(aes(x = sex, y = bill_length_mm))+
+  geom_boxplot()+  
+  geom_jitter(aes(col = species))
+  
+#To stejné, akorát s upravenou výškou, šířkou a průhledností
+  
+data %>%
+  ggplot(aes(x = sex, y = bill_length_mm))+
+  geom_boxplot()+  
+  geom_jitter(aes(col = species), height = 10, width = 0.15, alpha = 0.8, size = 2)
+  
+# Plot the histogram of penguins living on Biscoe island in 2008
+# comment: we don't have here the numerical variable which can be plotted, so e.g. flipper length
+
+data %>%
+  filter(island == "Biscoe", year == "2008") %>% 
+  ggplot(aes(x = flipper_length_mm))+
+  geom_histogram()+
+  labs(title = "Austriacky pingvín", x = "Flipper lenght (mm)", y = "Frequency")
+
+#Ještě jednou z řešení, ale je to úplně stejné :)
+
+data %>%
+  filter(island == 'Biscoe') %>%
+  filter(year == 2008) %>%
+  ggplot(aes(x = flipper_length_mm))+
+  geom_histogram()+
+  labs(title = 'Flipper length in penguins at Biscoe in 2008',
+       x = 'Flipper length (mm)' ,
+       y = 'Frequency')
+       
+# Create a scatterplot, where you will plot the dependency of bill length on bill depth and:
+#   color the points by species,
+#   set the shape based on island,
+#   create facets based on sex,
+#   set the theme to theme_minimal()
+#   label the axes appropriately
+
+data %>% 
+  group_by(species,island,sex) %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species, shape = island))+
+  geom_point()+
+  labs(title = "Bill length in relation to bill depth", x = "Bill length (mm)", y = "Bill depth (mm)")+
+  facet_wrap(. ~ sex)+
+  theme_minimal()
+
+# Create a stacked barplot, where:
+#   - on the x-axis will be species
+#   - on y axis counts for each of the respective categories (number of penguins),
+#   - fill will be based on island,
+#   - set theme to theme_classic()
+
+data %>% 
+  group_by(species,island) %>% 
+  summarize(n=n()) %>% 
+  ggplot(aes(x = species, y = n, fill = island))+
+  geom_bar((stat = "identity", position = position_dodge())
+
+#Nejede, nevím proč  
+
+# Plot a violin plot of Adelie species body mass based on island and overlay it with a boxplot.
+#   - Change the color based on island. 
+#   - How does parameter trim = FALSE in the geom_violin() function change the output? 
+
+data %>%
+  filter(species == "Adelie") %>%
+  ggplot(aes(x = island, y = body_mass_g, fill = island))+
+  geom_violin() +
+  geom_boxplot(width=0.3)
+
+#Rozdíl jen v tom TRIMU!
+
+data %>%
+  filter(species == "Adelie") %>%
+  ggplot(aes(x = island, y = body_mass_g, fill = island))+
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width=0.3)
+  
+# Create a scatterplot, where you will display the flipper length and body mass of Adelie species which have bill length >= 36,
+#   - color the points based on the island, and use a dark palette from RColorBrewer package. 
+#   - Use theme_minimal()
+#   - change the points size to 2
+#   - change opacity to 0.5 
+
+library(RColorBrewer)
+
+data %>%
+  filter(species == "Adelie") %>% 
+  filter(bill_length_mm >= 36) %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = island))+
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal()
+  
+#Prozatím hotovo :)
+  
 
 
-```
+
+
+
+
+
+
 
