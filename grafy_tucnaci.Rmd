@@ -334,10 +334,76 @@ data %>%
   scale_color_brewer(palette = "Dark2") +
   theme_minimal()
   
-#Prozatím hotovo :)
+#Prozatím hotovo :) A ta spodní část nejede - nejde ani načíst...
+
+# Read into 'df' variable the 'stats-results.csv' file
+
+df <- read.csv("stats-results.csv")
+
+# plot a volcano plot for the Ubi6-Ctrl contrast
+# add a variable 'significant' specifying if the protein is upregulated, downregulated or not-changed
+## upregulated: logFC > 1 & p-value < 0.05
+## downregulated: logFC < -1 & p-value < 0.05
+## not-changed: all other cases
+
+df <- df %>%
+  mutate(significant = case_when(
+    (Ubi6_vs_Ctrl_logFC > 1 & Ubi6_vs_Ctrl_p.adj < 0.05) ~ "upregulated",
+    (Ubi6_vs_Ctrl_logFC < -1 & Ubi6_vs_Ctrl_p.adj < 0.05) ~ "downregulated",
+    TRUE ~ "not-changed"))
+    
+# Color the points based on the 'significant' variable
+# Let's suppose we are specifically interested in following proteins: ARF4, BRAP.1, PSMD12, USP5, TNIP1, VKORC1
+
+## label these proteins in the volcano plot
+
+# volcano plot colored based on 'significant' variable
+
+df %>%
+  ggplot(aes(Ubi6_vs_Ctrl_logFC, -log10(Ubi6_vs_Ctrl_p.adj), col = significant))+
+    geom_point()  
+
+# label specific proteins
+
+df <- df %>%
+  mutate(proteins = case_when(name %in% c("ARF4", "BRAP.1", "PSMD12", "USP5", "TNIP1", "VKORC1") ~ name,
+    TRUE ~ ""))
+
+df %>%
+  ggplot(aes(Ubi6_vs_Ctrl_logFC, -log10(Ubi6_vs_Ctrl_p.adj), col = significant, label = proteins)) +
+  geom_point()+
+  geom_text()
   
+# Create the volcano plot in interactive version using plotly or ggplotly
+# Use the 'df'; color the points based on 'significant' variable
+# Display gene names on hover 
+# Save the interactive volcano plot as an .html file
+
+# ggplotly
+
+gg <-  ggplot(df, aes(Ubi6_vs_Ctrl_logFC, -log10(Ubi6_vs_Ctrl_p.adj), col = significant))+
+                     geom_point(aes(text = name))
+
+ggplotly(gg, tooltip = c("name"))
 
 
+# plotly
+
+p <- plot_ly (data = df,
+              x = ~ Ubi6_vs_Ctrl_logFC,
+              y = ~ -log10(Ubi6_vs_Ctrl_p.adj),
+              type = 'scatter',
+              mode = 'markers',
+              color = ~ significant,
+              text = ~ name)
+
+# save as html
+
+htmlwidgets::saveWidget(p, "plot.html")
+
+# sometimes you have to also add parameter selfcontained =  TRUE
+
+htmlwidgets::saveWidget(p, "plot.html", selfcontained = TRUE)
 
 
 
